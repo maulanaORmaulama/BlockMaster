@@ -141,7 +141,7 @@ int menuUtama() {
             if (key == 72) { sel--; if (sel < 0) sel = 2; } 
             if (key == 80) { sel++; if (sel > 2) sel = 0; } 
         } else if (key == 13) { 
-            return sel; // 0 = Play, 1 = Score, 2 = Quit
+            return sel; 
         }
     }
 }
