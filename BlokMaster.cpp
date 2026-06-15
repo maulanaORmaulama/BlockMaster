@@ -145,6 +145,27 @@ int menuUtama() {
         }
     }
 }
+void blokgerak(int &x, int &y, int key){
+	if (key == 75) x -= 2; // panah kiri
+	if (key == 77) x += 2; // panah kanan
+	if (key == 80) y += 1; // panah bawah
+}
+void rotasiblok(int bentuk[4][4]){
+	int temp[4][4];
+	for (int i = 0; i < 4; i++){
+		for (int j = 0; j < 4; j++){
+			temp[j][3 - i] = bentuk[i][j]; // rotasi 90 derajat
+		}
+	}
+	for(int i = 0; i < 4; i++){
+		for(int j = 0; j < 4; j++){
+			bentuk[i][j] = temp [i][j];
+		}
+	}
+}
+void spasi(int &y){
+	y = 20; // 20 adalah angka batas bawah kotak
+}
 //===========================FUNGSI MENU GAMEPLAY=========================================
 void layarGameplay() {
     clearScreen();
@@ -178,6 +199,23 @@ void layarGameplay() {
      cout << "Tekan tombol APAPUN untuk kembali ke Main Menu...";
     _getch();
 
+    int blokX = 35;
+    int blokY = 3;
+    int bentuk[4][4];
+    while(true) {
+        if(_kbhit()){
+            char key = _getch();
+            if(key == 27) break; // Tekan ESC untuk keluar ke menu
+            
+            if(key == 0 || key == (char)224){
+                key = _getch();
+                if(key == 72) rotasiblok(bentuk);
+                else blokgerak(blokX, blokY, key);
+            } else if(key == 32){
+                spasi(blokY);
+            }
+        }
+    }
 }
 //===========================================FUNGSI BUAT TOTURIAL=====================================
 bool sleepAtauInterupsi(int totalWaktuMs, int& halaman, bool& keluar) {
