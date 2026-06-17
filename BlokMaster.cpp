@@ -22,7 +22,9 @@ int offsetX = 50;
 #define WHITE   "\033[37m"
 #define GRAY    "\033[90m" 
 #define PURPLE  "\033[38;2;128;0;128m"
-
+// ==========================================
+// 1. FUNGSI UTILITAS (KURSOR & LAYAR)
+// ==========================================
 void setKursorHome() {
     cout << "\033[H" << flush;
 }
@@ -64,6 +66,15 @@ void gambarKotak(int startX, int startY, int width, int height,  string title = 
          cout << YELLOW << " " << title << " " << RESET;
     }
 }
+//INI BUAT NGEHAPUS ISI DALAM KOTAK TUTORIAL AGAR BISA DIGANTI DENGAN TUTORIAL BERIKUTNYA
+void hapusDalamKotak(int startX, int startY, int lebar, int tinggi) {
+    string spasiPembersih(lebar - 2, ' ');
+
+    for (int i = 1; i < tinggi - 1; i++) {
+        setPosisiKursor(startX + 1, startY + i);
+        cout << spasiPembersih;
+    }
+}
 
 //================================FUNGSI GAME OVER=======================================================
 void gameOver() {
@@ -81,7 +92,7 @@ void gameOver() {
          this_thread::sleep_for( chrono::milliseconds(100)); 
     }
     setPosisiKursor(37 + offsetX, 12); 
-     cout << RED << "\033[1m" << "GAME OVER" << RESET;
+    cout << RED << "\033[1m" << "GAME OVER" << RESET;
     
     // Bersihkan buffer input agar ketikan user saat animasi berjalan tidak bocor
     while (_kbhit()) { _getch(); } 
@@ -106,6 +117,9 @@ void gambarTampilanUtama() {
         setPosisiKursor(38 + offsetX, 5);  cout << RED << "T" << GREEN << "E" << YELLOW << "T" << BLUE << "R" << MAGENTA << "I" << CYAN << "S" << RESET;
         setPosisiKursor(31 + offsetX, 6);  cout << "--------------------";
 }
+// ==========================================
+// 2. MENU UTAMA    
+// ==========================================
 int menuUtama() {
     clearScreen();
      string opsi[] = {
@@ -166,14 +180,23 @@ void rotasiblok(int bentuk[4][4]){
 void spasi(int &y){
 	y = 20; // 20 adalah angka batas bawah kotak
 }
-//===========================FUNGSI MENU GAMEPLAY=========================================
+// ==========================================
+// 3. LAYAR GAMEPLAY (HUD)
+// ==========================================
 void layarGameplay() {
     clearScreen();
-        setPosisiKursor(9 + offsetX, 3);  cout  << "SPIN       :" << BOLD <<" ^"   << RESET;
-        setPosisiKursor(9 + offsetX, 5);  cout  << "SLIDE LEFT :" << BOLD <<" <"   << RESET;
-        setPosisiKursor(9 + offsetX, 7);  cout  << "SLIDE RIGHT:" << BOLD <<" >"   << RESET;
-        setPosisiKursor(9 + offsetX, 9);  cout  << "HOLD       :" << BOLD <<" C"   << RESET;
-        setPosisiKursor(9 + offsetX, 11);  cout << "DROP       :" << BOLD <<" SPACE" << RESET;
+    setPosisiKursor(6 + offsetX, 3);  
+    cout << "ROTATE      :" << BOLD <<" [ \u2191 ] "   << RESET;
+    setPosisiKursor(6 + offsetX, 5);  
+    cout << "SLIDE LEFT  :" << BOLD <<" [ ← ] "   << RESET;
+    setPosisiKursor(6 + offsetX, 7);  
+    cout << "SLIDE RIGHT :" << BOLD <<" [ → ] "   << RESET;
+    setPosisiKursor(6 + offsetX, 9);  
+    cout << "INSTANT DROP:" << BOLD << "[ SPACE ]" << RESET;
+    setPosisiKursor(6 + offsetX, 11);  
+    cout << "DROP        :" << BOLD <<" [ \u2193 ] " << RESET;
+    setPosisiKursor(6 + offsetX, 13);  
+    cout << "HOLD        :" << BOLD <<" [ C ] "   << RESET;
     gambarKotak(30 + offsetX, 2, 22, 22, "TETRIS");       
     gambarKotak(54 + offsetX, 2, 14, 6, "NEXT");         
     gambarKotak(54 + offsetX, 9, 14, 6, "HOLD");         
@@ -188,7 +211,7 @@ void layarGameplay() {
     setPosisiKursor(35 + offsetX, 13);  cout << RED << "KOTAK GAMPELAY" << RESET;
     
     setPosisiKursor(25 + offsetX, 26);
-     cout << "Tekan 'f' untuk simulasi Game Over...                  ";
+    cout << "Tekan 'f' untuk simulasi Game Over...                  ";
     
     char key = _getch();
 
@@ -196,7 +219,7 @@ void layarGameplay() {
         gameOver();
     }
     setPosisiKursor(25 + offsetX, 26);
-     cout << "Tekan tombol APAPUN untuk kembali ke Main Menu...";
+     cout << "Tekan tombol ESC untuk kembali ke Main Menu...";
     _getch();
 
     int blokX = 35;
@@ -217,7 +240,7 @@ void layarGameplay() {
         }
     }
 }
-//===========================================FUNGSI BUAT TOTURIAL=====================================
+//===========================================FUNGSI BUAT tutorial=====================================
 bool sleepAtauInterupsi(int totalWaktuMs, int& halaman, bool& keluar) {
     int waktuCheck = 10; 
     int akumulasi = 0;
@@ -244,337 +267,215 @@ bool sleepAtauInterupsi(int totalWaktuMs, int& halaman, bool& keluar) {
     }
     return false; 
 }
-void toturialGerak(int& halaman, bool& keluar) {
-    clearScreen();
+// ==========================================
+// 4. TUTORIAL PENGGUNAAN KONTROL
+// ==========================================
+void tutorialGerak(int& halaman, bool& keluar) {
     hideKursor();
-    const int lebarDalam = 59;
-    
-    while (true) {
-        for (int spasi = 20; spasi >= 4; spasi -= 2) {
-            setKursorHome();
-            cout << "+===========================================================+" << endl;
-            cout << "|                       HOW TO PLAY                         |" << endl;
-            cout << "+===========================================================+" << endl;
-            cout << "|" << GREEN << " [1] MOVE                                                  " << RESET << "|" << endl;
-            cout << "| Use left and right navigation keyboard buttons to move    |" << endl;
-            cout << "| block to left and right.                                  |" << endl;
-            cout << "|                                                           |" << endl;
-            cout << "|";
-            for (int i = 0; i < spasi + 2; i++) cout << " ";
-            cout << PURPLE << "[][]" << RESET;
-            int sisaSpasiAtas = lebarDalam - (spasi + 2) - 4;
-            for (int i = 0; i < sisaSpasiAtas; i++) cout << " ";
-            cout << "|" << endl;
-            cout << "|";
-            for (int i = 0; i < spasi; i++) cout << " ";
-            cout << PURPLE << "[][]" << RESET;
-            int sisaSpasiBawah = lebarDalam - spasi - 4;
-            for (int i = 0; i < sisaSpasiBawah; i++) cout << " ";
-            cout << "|" << endl;
-            cout << "|";
-            for (int i = 0; i < lebarDalam; i++) cout << " ";
-            cout << "|" << endl;
-            cout << "|                                                           |" << endl;
-            cout << "|                                                           |" << endl;
-            cout << "| BUTTON:   " << GREEN << "[ \u2190 ]" << RESET << "   [ \u2192 ]                                   |" << endl;
-            cout << "+===========================================================+" << endl;
-            cout << "[N] Next Page  |  [B] Back Page  |  [K] Menu Exit           " << endl;
-            
-            if (sleepAtauInterupsi(100, halaman, keluar)) return; 
-        }
+    int Kiri = 17, Kanan = 24;
+    int posisi = Kanan;
+    int arah = -1; // -1 = kiri, 1 = kanan
 
-        if (sleepAtauInterupsi(300, halaman, keluar)) return;
+    setPosisiKursor(20 +offsetX, 5); cout << GREEN << "[1] MOVE            " << RESET;
+    setPosisiKursor(20 +offsetX, 6); cout << "Use left and right navigation keyboard buttons to move " ;
+    setPosisiKursor(20 +offsetX, 7); cout << "block to left and right.                               " ;
+
+    while (true) {
+    if (sleepAtauInterupsi(100, halaman, keluar)) {
+        hapusDalamKotak(16 + offsetX, 3, 70, 17);
+        return;
+    }
+
+    setPosisiKursor(20 + offsetX, 18);
+    if (arah == -1)
+        cout << "BUTTON:" << GREEN << "   [ ← ]" << RESET << "   [ → ]";
+    else
+        cout << "BUTTON:   [ ← ]" << GREEN << "   [ → ]" << RESET;
+
+    setPosisiKursor(posisi + offsetX, 9);
+    cout << PURPLE << "    [][] " << RESET;
+
+    posisi += arah;
+
+    if (posisi <= Kiri)
+        arah = 1;
+    else if (posisi >= Kanan)
+        arah = -1;
+}
+}
+
+void tutorialUbah(int& halaman, bool& keluar){
+    hideKursor();
+
+    setPosisiKursor(20 +offsetX, 5); cout << GREEN << "[2] CHANGE DIRECTION" << RESET;
+    setPosisiKursor(20 +offsetX, 6); cout << "Use the top navigation keyboard buttons to change         " ;
+    setPosisiKursor(20 +offsetX, 7); cout << "the block shape.                                          " ;
+
+    for (int rotasi = 1; rotasi <= 3; rotasi++){
+        if(rotasi == 1){
+            if (sleepAtauInterupsi(100, halaman, keluar)) {
+                hapusDalamKotak(16 + offsetX, 3, 70, 17);
+                return;}   
+            setPosisiKursor(20 + offsetX, 9 );  cout << PURPLE << "          [][]                               " << RESET;
+            setPosisiKursor(20 + offsetX, 10 ); cout << PURPLE << "          []                                 " << RESET;
+            
+            }
+          
+        else if (rotasi == 2){
+            if (sleepAtauInterupsi(300, halaman, keluar)) {
+                hapusDalamKotak(16 + offsetX, 3, 70, 17);
+                return;
+            }
+            setPosisiKursor(20 + offsetX, 9 ); cout << PURPLE << "          []                                 " << RESET;
+            setPosisiKursor(20 + offsetX, 10 );cout << PURPLE << "          [][]                               " << RESET;
+            
+        }  
+                
+        else if (rotasi == 3){
+            if (sleepAtauInterupsi(300, halaman, keluar)) {
+                hapusDalamKotak(16 + offsetX, 3, 70, 17);
+                return;
+            } 
+            setPosisiKursor(20 + offsetX, 9 ); cout << PURPLE << "            []                               " << RESET;
+            setPosisiKursor(20 + offsetX, 10 );cout << PURPLE << "          [][]                               " << RESET;
+            
+        }
+        setPosisiKursor(20 + offsetX, 18);  cout << "BUTTON:" << GREEN << "    [ \u2191 ]                         " << RESET;
+        if (sleepAtauInterupsi(200, halaman, keluar)){
+            hapusDalamKotak(16 + offsetX, 3, 70, 17);
+            return;
+        }
+        setPosisiKursor(20 + offsetX, 18); cout << "BUTTON:" << "    [ \u2191 ]                     " << RESET;
+    }
         
-        for (int spasi = 4; spasi <= 20; spasi += 2) {
-            setKursorHome();
-            cout << "+===========================================================+" << endl;
-            cout << "|                       HOW TO PLAY                         |" << endl;
-            cout << "+===========================================================+" << endl;
-            cout << "|" << GREEN << " [1] MOVE                                                  " << RESET << "|" << endl;
-            cout << "| Use left and right navigation keyboard buttons to move    |" << endl;
-            cout << "| block to left and right.                                  |" << endl;
-            cout << "|                                                           |" << endl;
-            cout << "|";
-            for (int i = 0; i < spasi + 2; i++) cout << " ";
-            cout << PURPLE << "[][]" << RESET;
-            int sisaSpasiAtas = lebarDalam - (spasi + 2) - 4;
-            for (int i = 0; i < sisaSpasiAtas; i++) cout << " ";
-            cout << "|" << endl;
-            cout << "|";
-            for (int i = 0; i < spasi; i++) cout << " ";
-            cout << PURPLE << "[][]" << RESET;
-            int sisaSpasiBawah = lebarDalam - spasi - 4;
-            for (int i = 0; i < sisaSpasiBawah; i++) cout << " ";
-            cout << "|" << endl;
-            cout << "|";
-            for (int i = 0; i < lebarDalam; i++) cout << " ";
-            cout << "|" << endl;
-            cout << "|                                                           |" << endl;
-            cout << "|                                                           |" << endl;
-            cout << "| BUTTON:   [ \u2190 ]   " << GREEN << "[ \u2192 ]" << RESET << "                                   |" << endl;
-            cout << "+===========================================================+" << endl;
-            cout << "[N] Next Page  |  [B] Back Page  |  [K] Menu Exit           " << endl;
-            
-            if (sleepAtauInterupsi(100, halaman, keluar)) return;
-        }      
-        if (sleepAtauInterupsi(300, halaman, keluar)) return; 
-    }
+    
 }
 
-void toturialUbah(int& halaman, bool& keluar){
-    clearScreen();
+void tutorialTurunCepat(int& halaman, bool& keluar) {
     hideKursor();
-    const int spasi = 25;
-    const int lebarDalam = 59;
-
-    while (true) {
-        for(int rotasi = 0; rotasi < 4; rotasi++){
-            setKursorHome();
-            cout << "+===========================================================+" << endl;
-            cout << "|                       HOW TO PLAY                         |" << endl;
-            cout << "+===========================================================+" << endl;
-            cout << "|" << GREEN << " [2] CHANGE DIRECTION                                      " << RESET << "|" << endl;
-            cout << "| Use the top navigation keyboard buttons to change         |" << endl;
-            cout << "| the block shape.                                          |" << endl;
-            cout << "|                                                           |" << endl;
-            cout << "|";
-            if(rotasi == 0 || rotasi == 1 || rotasi == 3){
-                for(int i = 0; i < spasi + 2; i++) cout << " ";
-                cout << PURPLE << "[]" << RESET;
-                int sisa = lebarDalam - (spasi + 2) - 2;
-                for(int i = 0; i < sisa; i++) cout << " ";
-            }
-            else if (rotasi == 2){
-                for(int i = 0; i < spasi; i++) cout << " ";
-                cout << PURPLE << "[][][]" << RESET;
-                int sisa = lebarDalam - spasi - 6;
-                for(int i = 0; i < sisa; i++) cout << " ";
-            }
-            cout << "|" << endl; 
-            cout << "|";
-            if(rotasi == 0){
-                for(int i = 0; i < spasi; i++) cout << " ";
-                cout << PURPLE << "[][][]" << RESET;
-                int sisa = lebarDalam - spasi - 6;
-                for(int i = 0; i < sisa; i++) cout << " ";
-            }
-            else if(rotasi == 1){
-                for(int i = 0; i < spasi; i++) cout << " ";
-                cout << PURPLE << "[][]" << RESET;
-                int sisa = lebarDalam - spasi - 4;
-                for(int i = 0; i < sisa; i++) cout << " ";
-            }
-            else if(rotasi == 2){
-                for(int i = 0; i < spasi + 2; i++) cout << " ";
-                cout << PURPLE << "[]" << RESET;
-                int sisa = lebarDalam - (spasi + 2) - 2;
-                for(int i = 0; i < sisa; i++) cout << " ";
-            }
-            else if(rotasi == 3){
-                for(int i = 0; i < spasi; i++) cout << " ";
-                cout << PURPLE << "[][]" << RESET;
-                int sisa = lebarDalam - spasi - 4;
-                for(int i = 0; i < sisa; i++) cout << " ";
-            }
-            cout << "|" << endl;    
-            cout << "|";
-            if(rotasi == 1 || rotasi == 3){
-                for(int i = 0; i < spasi + 2; i++) cout << " ";
-                cout << PURPLE << "[]" << RESET;
-                int sisa = lebarDalam - (spasi + 2) - 2;
-                for(int i = 0; i < sisa; i++) cout << " ";
-            }
-            else {
-                for(int i = 0; i < lebarDalam; i++) cout << " ";
-            }
-            cout << "|" << endl;
-            cout << "|                                                           |" << endl;
-            cout << "| BUTTON:   " << GREEN << "[\u2191]" << RESET << "                                             |" << endl;
-            cout << "+===========================================================+" << endl;
-            cout << "[N] Next Page  |  [B] Back Page  |  [K] Menu Exit           " << endl;
-
-            if (sleepAtauInterupsi(400, halaman, keluar)) return;
-            
-            cout << "\033[3A" << flush;
-            cout << "| BUTTON:   [\u2191]                                             |" << endl;
-            cout << "+===========================================================+" << endl;
-            cout << "\033[B" << flush;
-            
-            if (sleepAtauInterupsi(150, halaman, keluar)) return;
+    setPosisiKursor(20 + offsetX, 5); 
+        cout << GREEN << "[3] DROP BLOCK" << RESET;
+    setPosisiKursor(20 + offsetX, 6); 
+        cout << "Use [\u2193] for Soft Drop or [Space] for instant Hard Drop";
+    
+    int startY = 9;
+    int endY = 15;
+    int posX = 25 + offsetX; 
+ 
+    // ==========================================
+    // SOFT DROP (Turun Perlahan)
+    // ==========================================
+    for (int y = startY; y <= endY; y++) {
+        if (y > startY) {
+            setPosisiKursor(posX, y - 1);
+            cout << "        ";
+        }
+        setPosisiKursor(posX, y);
+            cout << PURPLE << "[][][][]" << RESET;
+        setPosisiKursor(20 + offsetX, 18);
+            cout << "BUTTON:   " << GREEN << "[ \u2193 ]" << RESET << "   [ Space ]";
+        if (sleepAtauInterupsi(100, halaman, keluar)) {
+            hapusDalamKotak(16 + offsetX, 3, 70, 17);
+            return;
         }
     }
+    setPosisiKursor(posX, endY); cout << "        ";
+    if (sleepAtauInterupsi(200, halaman, keluar)) { hapusDalamKotak(16 + offsetX, 3, 70, 17); return; }
+    // ==========================================
+    //        HARD DROP (Turun Instan)
+    // ==========================================
+    
+    setPosisiKursor(posX, startY); 
+        cout << PURPLE << "[][][][]" << RESET;
+    setPosisiKursor(20 + offsetX, 18);
+        cout << "BUTTON:   [ \u2193 ]   " << GREEN << "[ Space ]" << RESET;
+    if (sleepAtauInterupsi(300, halaman, keluar)) { hapusDalamKotak(16 + offsetX, 3, 70, 17); return; }
+    setPosisiKursor(posX, startY); 
+        cout << "        "; 
+    setPosisiKursor(posX, endY); 
+        cout << PURPLE << "[][][][]" << RESET;
+    if (sleepAtauInterupsi(300, halaman, keluar)) { hapusDalamKotak(16 + offsetX, 3, 70, 17); return; }
+    setPosisiKursor(posX, endY); 
+        cout << "        ";
+    setPosisiKursor(20 + offsetX, 18);
+        cout << "BUTTON:   [ \u2193 ]   [ Space ]        ";
 }
-
-void toturialTurunCepat(int& halaman, bool& keluar){
-    clearScreen();
+void tutorialHold(int& halaman, bool& keluar) {
     hideKursor();
-    const int spasi = 23;
-    const int lebarDalam = 59;
+    
+    setPosisiKursor(20 + offsetX, 5); cout << GREEN << "[4] HOLD BLOCK" << RESET;
+    setPosisiKursor(20 + offsetX, 6); cout << "Press [ C ] to store the current block into the HOLD box";
 
-    while (true) {
-        for(int tinggi = 0; tinggi <= 2; tinggi++){
-            setKursorHome();
-            cout << "+===========================================================+" << endl;
-            cout << "|                       HOW TO PLAY                         |" << endl;
-            cout << "+===========================================================+" << endl;
-            cout << "|" << GREEN << " [3] DROP BLOCK                                            " << RESET << "|" << endl;
-            cout << "| Use [↓] for Soft Drop or [Space] for instant Hard Drop    |" << endl;
-            cout << "|                                                           |" << endl;
-            for(int b = 0; b < 3; b++){
-                cout << "|";
-                if(b == tinggi){
-                    for(int i = 0; i < spasi; i++) cout << " ";
-                    cout << RED << "[][][][]" << RESET;
-                    int sisa = lebarDalam - spasi - 8;
-                    for(int i = 0; i < sisa; i++) cout << " "; 
-                }
-                else{
-                    for(int i = 0; i < lebarDalam; i++) cout << " ";
-                }
-                cout << "|" << endl;
-            }
-            cout << "|                                                           |" << endl;
-            cout << "| BUTTON:   " << GREEN << "[ \u2193 ]" << RESET << "   [ Space ]                               |" << endl;
-            cout << "+===========================================================+" << endl;
-            cout << "[N] Next Page  |  [B] Back Page  |  [K] Menu Exit           " << endl;
+    setPosisiKursor(22 + offsetX, 9);  cout << "+--- HOLD ---+";
+    setPosisiKursor(22 + offsetX, 10); cout << "|            |";
+    setPosisiKursor(22 + offsetX, 11); cout << "+------------+";
 
-            if (sleepAtauInterupsi(250, halaman, keluar)) return;
+    int xDalam = 24 + offsetX;
+    int xLuar = 45 + offsetX;   
+    int yBlok = 10;             
+    int yTombol = 18;           
 
-            cout << "\033[3A\r| BUTTON:   [ \u2193 ]   [ Space ]                               |" << endl;
-            cout << "+===========================================================+" << endl;
-            cout << "\033[B" << flush;
+    
+    setPosisiKursor(xDalam, yBlok); cout << "        "; 
 
-            if (sleepAtauInterupsi(100, halaman, keluar)) return;
-        }
-
-        if (sleepAtauInterupsi(400, halaman, keluar)) return;
-
-        for(int f = 0; f < 2; f++){
-            setKursorHome();
-            cout << "+===========================================================+" << endl;
-            cout << "|                       HOW TO PLAY                         |" << endl;
-            cout << "+===========================================================+" << endl;
-            cout << "|" << GREEN << " [3] DROP BLOCK                                            " << RESET << "|" << endl;
-            cout << "| Use [↓] for Soft Drop or [Space] for instant Hard Drop    |" << endl;
-            cout << "|                                                           |" << endl;
-            int tinggiHardDrop = (f == 0) ? 0 : 2;
-            for(int b = 0; b < 3; b++){
-                cout << "|";
-                if(b == tinggiHardDrop){
-                    for(int i = 0; i < spasi; i++) cout << " ";
-                    cout << RED << "[][][][]" << RESET;
-                    int sisa = lebarDalam - spasi - 8;
-                    for(int i = 0; i < sisa; i++) cout << " ";
-                }
-                else{
-                    for(int i = 0; i < lebarDalam; i++) cout << " ";
-                }
-                cout << "|" << endl;
-            }
-            cout << "|                                                           |" << endl;
-            if (f == 0) {
-                cout << "| BUTTON:   [ \u2193 ]   " << GREEN << "[ Space ]" << RESET << "                               |" << endl;
-            } else {
-                cout << "| BUTTON:   [ \u2193 ]   [ Space ]                               |" << endl;
-            }
-            cout << "+===========================================================+" << endl;
-            cout << "[N] Next Page  |  [B] Back Page  |  [K] Menu Exit           " << endl;
-            if(f == 0){
-                if (sleepAtauInterupsi(150, halaman, keluar)) return;
-            }
-            else{
-                if (sleepAtauInterupsi(600, halaman, keluar)) return;
-            }
-        }
+    setPosisiKursor(xLuar, yBlok);  cout << RED << "[][][][]" << RESET; 
+    
+    setPosisiKursor(20 + offsetX, yTombol); 
+    cout << "BUTTON:   [ C ]";
+    if (sleepAtauInterupsi(600, halaman, keluar)) {
+        hapusDalamKotak(16 + offsetX, 3, 70, 17);
+        return;
     }
-}
-void toturialHold(int& halaman, bool& keluar){
-    const int lebarDalam = 59;
+    
+    // Hapus balok dari luar
+    setPosisiKursor(xLuar, yBlok);  cout << "        "; 
+    
+    // Munculkan balok di dalam kotak HOLD
+    setPosisiKursor(xDalam, yBlok); cout << RED << "[][][][]" << RESET; 
 
-    while (true) {
-        for(int frame = 0; frame < 2; frame++){
-            clearScreen();
-            hideKursor();
-            cout << "+===========================================================+" << endl;
-            cout << "|                       HOW TO PLAY                         |" << endl;
-            cout << "+===========================================================+" << endl;
-            cout << "|" << GREEN << " [4] HOLD BLOCK                                            " << RESET << "|" << endl;
-            cout << "| Press [ C ] to store the current block into the HOLD box  |" << endl;
-            cout << "|                                                           |" << endl;
-            cout << "|   +--- " << YELLOW << "HOLD" << RESET << " ---+                                          |" << endl;
-            cout << "|   |            | ";
-            for(int i = 0; i < 15; i++) cout << " ";
-            cout << RED << "[][][][]" << RESET;
-            int sisa = lebarDalam - 18 - 15 - 8;
-            for(int i = 0; i < sisa; i++) cout << " ";
-            cout << "|" << endl;
-            cout << "|   +------------+                                          |" << endl;
-            cout << "|                                                           |" << endl;
-            if(frame == 0) {
-                cout << "| BUTTON:   " << GREEN << "[ C ]" << RESET << "                                           |" << endl;
-            } else {
-                cout << "| BUTTON:   [ C ]                                           |" << endl;
-            }
-            cout << "+===========================================================+" << endl;
-            cout << "[N] Next Page  |  [B] Back Page  |  [K] Menu Exit           " << endl;
-
-            if(frame == 0) {
-                if (sleepAtauInterupsi(400, halaman, keluar)) return;
-            } else {
-                if (sleepAtauInterupsi(150, halaman, keluar)) return;
-            }
-        }
-        for(int frame = 0; frame < 2; frame++){
-            clearScreen();
-            hideKursor();
-            cout << "+===========================================================+" << endl;
-            cout << "|                       HOW TO PLAY                         |" << endl;
-            cout << "+===========================================================+" << endl;
-            cout << "|" << GREEN << " [4] HOLD BLOCK                                            " << RESET << "|" << endl;
-            cout << "| Press [ C ] to store the current block into the HOLD box  |" << endl;
-            cout << "|                                                           |" << endl;
-            cout << "|   +--- " << YELLOW << "HOLD" << RESET << " ---+                                          |" << endl;
-            cout << "|   |  " << RED << "[][][][]" << RESET << "  |                                          |" << endl;
-            cout << "|   +------------+                                          |" << endl;
-            cout << "|                                                           |" << endl;
-            cout << "| BUTTON:   [ C ]                                           |" << endl;
-            cout << "+===========================================================+" << endl;
-            cout << "[N] Next Page  |  [B] Back Page  |  [K] Menu Exit           " << endl;
-            if(frame == 0) {
-                if (sleepAtauInterupsi(600, halaman, keluar)) return;
-            } else {
-                if (sleepAtauInterupsi(200, halaman, keluar)) return;
-            }
-        }
+    setPosisiKursor(20 + offsetX, yTombol); 
+    cout << "BUTTON:   " << GREEN << "[ C ]" << RESET;
+    if (sleepAtauInterupsi(600, halaman, keluar)) {
+        hapusDalamKotak(16 + offsetX, 3, 70, 17);
+        return;
     }
+    
 }
-//=================MENU HOW TO PLAY==================
+// ==========================================
+// 5. MENU HOW TO PLAY
+// ==========================================
 void howToPlay() {
-    system("chcp 65001 > nul");
+    clearScreen();
+
     int halaman = 1;
     bool keluar = false;
-    
+
+    gambarKotak(16 + offsetX, 3, 70, 17, "HOW TO PLAY");
+    setPosisiKursor(26 + offsetX, 20); cout << "[N] Next Page  |  [B] Back Page  |  [K] Menu Exit           ";
+
     while (!keluar) {
         if (halaman == 1) {
-            toturialGerak(halaman, keluar);
+            tutorialGerak(halaman, keluar);
         } 
         else if (halaman == 2) {
-            toturialUbah(halaman, keluar);
+            tutorialUbah(halaman, keluar);
         } 
         else if (halaman == 3) {
-            toturialTurunCepat(halaman, keluar);
+            tutorialTurunCepat(halaman, keluar);
         } 
         else if (halaman == 4) {
-            toturialHold(halaman, keluar);
+            tutorialHold(halaman, keluar);
         }
     }
     clearScreen();
     showKursor();
 }
-
-//==================PENGATUR STATE DAN ROUTE===============
+// ==========================================
+// 6. SCREEN ROUTER (MAIN LOOP)
+// ==========================================
 int main(){
-     cout << "\033[?25l";
+    system("chcp 65001 > nul");
+    cout << "\033[?25l";
     bool aplikasiBerjalan = true;
     char key;
     while (aplikasiBerjalan) {
