@@ -52,7 +52,7 @@ BlockMaster adalah permainan Tetris klasik berbasis konsol (*terminal-based game
 Buka Command Prompt atau PowerShell di direktori tempat file Anda berada, lalu jalankan perintah:
 
 ```bash
-g++ -O3 BlockMaster.cpp -o BlockMaster.exe -lwinmm
+g++ BlockMaster.cpp -o TetrisGame.exe -lwinmm && .\TetrisGame.exe
 ```
 ## 📂 Struktur Berkas
 Setelah program dikompilasi dan dijalankan untuk pertama kalinya, sistem akan otomatis menghasilkan beberapa berkas pendukung. Berikut adalah struktur direktori proyek yang terbentuk:
