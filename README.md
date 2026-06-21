@@ -86,8 +86,8 @@ Special credit:
 ---
 <table align="center">
   <tr>
-    <td><img src="Dokumentasi/Dokumentasi1.png" width="100%" alt="Foto 1"/></td>
+    <td><img src="Dokumentasi/Dokumentasi 1.jpeg" width="100%" alt="Foto 1"/></td>
     <td><img src="klp10logo.png" width="100%" alt="Foto 3"/></td>
-    <td><img src="Dokumentasi/Dokumentasi2.png" width="100%" alt="Foto 2"/></td>
+    <td><img src="Dokumentasi/Dokumentasi2.jpeg" width="100%" alt="Foto 2"/></td>
   </tr>
 </table>
