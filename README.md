@@ -67,13 +67,27 @@ Setelah program dikompilasi dan dijalankan untuk pertama kalinya, sistem akan ot
 ```
 ## 👥 Kontributor (Credits)
 Proyek ini dikembangkan bersama oleh:
-| NAME | ROLE |
-| :--- | :--- |
-| **ISNA** | Advance Fitur and logic developer |
-| **AURA** | Game Core Engineer |
-| **HABIB** | Block and Next Designer|
-| **BINTANG** | UI Designer|
-| **EZRA** | Block logic |
-| **NISA** | HOLD fitur and board engineer |
-| **ESC** | Board Logic |
+| NAME | STUDENT ID | ROLE |
+| :--- | :--- | :--- |
+| **Maulana Isna Andika** | F1D02510072 | Advance Fitur and logic developer |
+| **Aura Iftita Ihzarani** | F1D02510107 | Game Core Engineer |
+| **HABIB** |  | Block and Next Designer|
+| **Muhammad Bintang Arifin** | F1D02510124 | UI Designer|
+| **EZRA** |  | Block logic |
+| **Nisa Agnia** | F1D02510087 | HOLD fitur and board engineer |
+| **Sarah Amelia Agustina Putri** | F1D02510133 | Board Logic |
 
+Special credit:
+| ROLE | NAME | STUDENT ID |
+| :--- | :--- | :--- |
+| **Coordinator Praktikum** | I Nyoman Widiyasa Jayananda | F1D02410053 |
+| **Pendamping** | Abdurrahman Karim | F1D02410031 |
+
+---
+<table align="center">
+  <tr>
+    <td><img src="Dokumentasi/Dokumentasi1.png" width="100%" alt="Foto 1"/></td>
+    <td><img src="klp10logo.png" width="100%" alt="Foto 3"/></td>
+    <td><img src="Dokumentasi/Dokumentasi2.png" width="100%" alt="Foto 2"/></td>
+  </tr>
+</table>
