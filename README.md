@@ -66,7 +66,7 @@ Proyek ini dikembangkan bersama oleh:
 | NAME | ROLE |
 | :--- | :--- |
 | **ISNA** | Advance Fitur and logic developer |
-| **AURE** | Game Core Engineer |
+| **AURA** | Game Core Engineer |
 | **HABIB** | Block and Next Designer|
 | **BINTANG** | UI Designer|
 | **EZRA** | Block logic |
