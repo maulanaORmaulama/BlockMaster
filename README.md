@@ -2,8 +2,6 @@
   <img src="klp10banner.gif" width="100%" alt="BlockMster"/>
 </p>
 
-# BlockMaster: C++ Tetris 🎮
-
 BlockMaster adalah permainan Tetris klasik berbasis konsol (*terminal-based game*) yang dibangun menggunakan bahasa pemrograman C++. Game ini memanfaatkan ANSI *escape codes* untuk menghasilkan visual yang berwarna dan animasi yang interaktif langsung di dalam terminal Windows. Selain itu, game ini dilengkapi dengan musik tema legendaris Tetris dan efek suara yang dibuat secara programatis menggunakan modul audio Windows API.
 
 ---
