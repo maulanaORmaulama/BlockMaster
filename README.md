@@ -71,7 +71,7 @@ Proyek ini dikembangkan bersama oleh:
 | **Aura Iftita Ihzarani** | F1D02510107 | Game Core Engineer |
 | **HABIB** |  | Block and Next Designer|
 | **Muhammad Bintang Arifin** | F1D02510124 | UI Designer|
-| **EZRA** |  | Block logic |
+| **Nayudha Ezra Wicaksana** | F1D02510019 | Block logic |
 | **Nisa Agnia** | F1D02510087 | HOLD fitur and board engineer |
 | **Sarah Amelia Agustina Putri** | F1D02510133 | Board Logic |
 
