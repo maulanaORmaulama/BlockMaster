@@ -9,7 +9,6 @@ BlockMaster adalah permainan Tetris klasik berbasis konsol (*terminal-based game
 ## 🚀 Fitur Utama
 
 * **Gameplay Tetris Klasik:** Mekanisme penuh mulai dari pergerakan blok, rotasi, kalkulasi baris penuh (*line clearing*), hingga peningkatan level secara berkala seiring bertambahnya skor.
-* **Audio & Musik Dinamis:** Program otomatis memproduksi berkas audio `.wav` secara mandiri pada saat pertama kali dijalankan menggunakan modul synthesizer berbasis programatik, lalu memutarnya via Windows API (`PlaySoundA`).
 * **Fitur Hold Block:** Simpan blok yang sedang aktif menggunakan tombol khusus (`C`) untuk digunakan di strategi berikutnya.
 * **Sistem High Score:** Skor tertinggi Anda akan otomatis disimpan ke dalam berkas teks (`highscore.txt`) dan diurutkan secara waktu nyata (*real-time*).
 * **Menu Panduan Interaktif (How to Play):** Animasi tutorial langsung di dalam konsol yang memandu pemain cara menggerakkan, memutar, menjatuhkan, dan menyimpan blok.
@@ -46,13 +45,12 @@ BlockMaster adalah permainan Tetris klasik berbasis konsol (*terminal-based game
 ### Prasyarat (Prerequisites)
 1.  **Sistem Operasi:** Khusus Windows (karena menggunakan *library* `<conio.h>` dan komponen Windows API `PlaySoundA`).
 2.  **Kompiler:** MinGW / GCC atau IDE seperti Dev-C++ / Code::Blocks / Visual Studio.
-3. **Catatan:** Menjalankan di Visual StudioCode butuh mengubah terminal menjadi CommandPromt agar program berjalan. 
 
 ### Langkah Kompilasi via Terminal (CLI)
 Buka Command Prompt atau PowerShell di direktori tempat file Anda berada, lalu jalankan perintah:
 
 ```bash
-g++ BlockMaster.cpp -o TetrisGame.exe -lwinmm && .\TetrisGame.exe
+g++ BlockMaster.cpp -o TetrisGame.exe && .\TetrisGame.exe
 ```
 ## 📂 Struktur Berkas
 Setelah program dikompilasi dan dijalankan untuk pertama kalinya, sistem akan otomatis menghasilkan beberapa berkas pendukung. Berikut adalah struktur direktori proyek yang terbentuk:
@@ -60,8 +58,6 @@ Setelah program dikompilasi dan dijalankan untuk pertama kalinya, sistem akan ot
 ├── 📄 BlockMaster.cpp      # Source code utama permainan Tetris
 ├── ⚙️ BlockMaster.exe      # Executable file hasil kompilasi
 ├── 📝 highscore.txt        # Berkas penyimpanan data 7 skor tertinggi (Otomatis dibuat)
-├── 🎵 theme.wav            # Berkas audio musik latar Tetris (Otomatis dibuat)
-└── 🔊 gameover.wav         # Berkas audio efek suara game over (Otomatis dibuat)
 ```
 ## 👥 Kontributor (Credits)
 Proyek ini dikembangkan bersama oleh:
