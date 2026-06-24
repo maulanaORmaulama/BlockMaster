@@ -7,7 +7,6 @@
 #include <thread>
 #include <string>
 #include <fstream>
-#include <algorithm>
 using namespace std;
 
 int offsetX = 40;
@@ -20,7 +19,6 @@ const int JUMLAH_TIPE = 7;
 const string FILE_HIGHSCORE = "highscore.txt";
 
 // =========================WARNA WARNI==============================
-#define BOLD    "\033[1m"
 #define RESET   "\033[0m"
 #define RED     "\033[31m"
 #define GREEN   "\033[32m"
