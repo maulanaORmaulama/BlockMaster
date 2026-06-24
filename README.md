@@ -2,8 +2,6 @@
   <img src="klp10banner.gif" width="100%" alt="BlockMster"/>
 </p>
 
-# BlockMaster: C++ Tetris 🎮
-
 BlockMaster adalah permainan Tetris klasik berbasis konsol (*terminal-based game*) yang dibangun menggunakan bahasa pemrograman C++. Game ini memanfaatkan ANSI *escape codes* untuk menghasilkan visual yang berwarna dan animasi yang interaktif langsung di dalam terminal Windows. Selain itu, game ini dilengkapi dengan musik tema legendaris Tetris dan efek suara yang dibuat secara programatis menggunakan modul audio Windows API.
 
 ---
@@ -11,7 +9,6 @@ BlockMaster adalah permainan Tetris klasik berbasis konsol (*terminal-based game
 ## 🚀 Fitur Utama
 
 * **Gameplay Tetris Klasik:** Mekanisme penuh mulai dari pergerakan blok, rotasi, kalkulasi baris penuh (*line clearing*), hingga peningkatan level secara berkala seiring bertambahnya skor.
-* **Audio & Musik Dinamis:** Program otomatis memproduksi berkas audio `.wav` secara mandiri pada saat pertama kali dijalankan menggunakan modul synthesizer berbasis programatik, lalu memutarnya via Windows API (`PlaySoundA`).
 * **Fitur Hold Block:** Simpan blok yang sedang aktif menggunakan tombol khusus (`C`) untuk digunakan di strategi berikutnya.
 * **Sistem High Score:** Skor tertinggi Anda akan otomatis disimpan ke dalam berkas teks (`highscore.txt`) dan diurutkan secara waktu nyata (*real-time*).
 * **Menu Panduan Interaktif (How to Play):** Animasi tutorial langsung di dalam konsol yang memandu pemain cara menggerakkan, memutar, menjatuhkan, dan menyimpan blok.
@@ -48,13 +45,12 @@ BlockMaster adalah permainan Tetris klasik berbasis konsol (*terminal-based game
 ### Prasyarat (Prerequisites)
 1.  **Sistem Operasi:** Khusus Windows (karena menggunakan *library* `<conio.h>` dan komponen Windows API `PlaySoundA`).
 2.  **Kompiler:** MinGW / GCC atau IDE seperti Dev-C++ / Code::Blocks / Visual Studio.
-3. **Catatan:** Menjalankan di Visual StudioCode butuh mengubah terminal menjadi CommandPromt agar program berjalan. 
 
 ### Langkah Kompilasi via Terminal (CLI)
 Buka Command Prompt atau PowerShell di direktori tempat file Anda berada, lalu jalankan perintah:
 
 ```bash
-g++ -O3 BlockMaster.cpp -o BlockMaster.exe -lwinmm
+g++ BlockMaster.cpp -o TetrisGame.exe && .\TetrisGame.exe
 ```
 ## 📂 Struktur Berkas
 Setelah program dikompilasi dan dijalankan untuk pertama kalinya, sistem akan otomatis menghasilkan beberapa berkas pendukung. Berikut adalah struktur direktori proyek yang terbentuk:
@@ -62,18 +58,30 @@ Setelah program dikompilasi dan dijalankan untuk pertama kalinya, sistem akan ot
 ├── 📄 BlockMaster.cpp      # Source code utama permainan Tetris
 ├── ⚙️ BlockMaster.exe      # Executable file hasil kompilasi
 ├── 📝 highscore.txt        # Berkas penyimpanan data 7 skor tertinggi (Otomatis dibuat)
-├── 🎵 theme.wav            # Berkas audio musik latar Tetris (Otomatis dibuat)
-└── 🔊 gameover.wav         # Berkas audio efek suara game over (Otomatis dibuat)
 ```
 ## 👥 Kontributor (Credits)
 Proyek ini dikembangkan bersama oleh:
-| NAME | ROLE |
-| :--- | :--- |
-| **ISNA** | Advance Fitur and logic developer |
-| **AURA** | Game Core Engineer |
-| **HABIB** | Block and Next Designer|
-| **BINTANG** | UI Designer|
-| **EZRA** | Block logic |
-| **NISA** | HOLD fitur and board engineer |
-| **ESC** | Board Logic |
+| NAME | STUDENT ID | ROLE |
+| :--- | :--- | :--- |
+| **Maulana Isna Andika** | F1D02510072 | Advance Fitur and logic developer |
+| **Aura Iftita Ihzarani** | F1D02510107 | Game Core Engineer |
+| **HABIB** |  | Block and Next Designer|
+| **Muhammad Bintang Arifin** | F1D02510124 | UI Designer|
+| **Nayudha Ezra Wicaksana** | F1D02510019 | Block logic |
+| **Nisa Agnia** | F1D02510087 | HOLD fitur and board engineer |
+| **Sarah Amelia Agustina Putri** | F1D02510133 | Board Logic |
 
+Special credit:
+| ROLE | NAME | STUDENT ID |
+| :--- | :--- | :--- |
+| **Coordinator Praktikum** | I Nyoman Widiyasa Jayananda | F1D02410053 |
+| **Pendamping** | Abdurrahman Karim | F1D02410031 |
+
+---
+<table align="center">
+  <tr>
+    <td><img src="Dokumentasi/Dokumentasi 1.jpeg" width="100%" alt="Foto 1"/></td>
+    <td><img src="klp10logo.png" width="100%" alt="Foto 3"/></td>
+    <td><img src="Dokumentasi/Dokumentasi2.jpeg" width="100%" alt="Foto 2"/></td>
+  </tr>
+</table>

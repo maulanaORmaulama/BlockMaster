@@ -34,200 +34,6 @@ const string FILE_HIGHSCORE = "highscore.txt";
 #define ORANGE  "\033[38;5;208m"
 #define PURPLE  "\033[38;2;128;0;128m"
 
-//=====================Music==========================================
-extern "C" __declspec(dllimport) int __stdcall PlaySoundA(const char*, void*, unsigned long);
-
-#define SND_ASYNC     0x0001
-#define SND_LOOP      0x0008
-#define SND_FILENAME  0x00020000
-#define SND_NODEFAULT 0x0002
-
-#pragma pack(push, 1)
-struct LabelAudio {
-    char riff[4] = {'R', 'I', 'F', 'F'};
-    int32_t ukuran_total_file;
-    char wave[4] = {'W', 'A', 'V', 'E'};
-    char fmt[4] = {'f', 'm', 't', ' '};
-    int32_t ukuran_fmt_header = 16;
-    int16_t format_audio = 1;       
-    int16_t jumlah_channel = 1;     
-    int32_t sample_rate = 44100;    
-    int32_t byte_per_detik;
-    int16_t blok_align;
-    int16_t bit_per_sampel = 16;    
-    char data[4] = {'d', 'a', 't', 'a'};
-    int32_t ukuran_isi_suara;
-};
-#pragma pack(pop)
-struct NotaMusik {
-    float frekuensi_melodi;
-    float frekuensi_bass;
-    float durasi; 
-};
-
-void buatMusikTetris() {
-    ifstream cekFile("theme.wav");
-    if (cekFile.good()) {
-        cekFile.close();
-        return; 
-    }
-    cekFile.close();
-
-    const int SAMPLE_RATE = 44100;
-    const float TWO_PI = 6.28318530f;
-    const int VOLUME_MELODI = 8000;  
-    const int VOLUME_BASS = 4000;    
-
-    const float A6 = 1760.00f; const float G6 = 1567.98f; const float F6 = 1396.91f;
-    const float E6 = 1318.51f; const float D6 = 1174.66f; const float C6 = 1046.50f;
-    const float B5 = 987.77f;  const float A5 = 880.00f;  const float G5 = 783.99f;
-    const float E5 = 659.25f;  const float D5 = 587.33f;
-    const float C5 = 523.25f;  const float B4 = 493.88f;  const float A4 = 440.00f;
-    const float G4 = 392.00f;  const float E4 = 329.63f;
-
-    const float CHORD_AM = 110.00f; const float CHORD_E  = 82.41f;  
-    const float CHORD_DM = 146.83f; const float CHORD_C  = 130.81f; 
-    const float CHORD_G4 = 98.00f;
-
-    vector<NotaMusik> lagu = {
-        {E6, CHORD_E,  0.4f}, {B5, CHORD_E,  0.2f}, {C6, CHORD_E,  0.2f}, {D6, CHORD_AM, 0.4f}, {C6, CHORD_AM, 0.2f}, {B5, CHORD_AM, 0.2f},
-        {A5, CHORD_AM, 0.4f}, {A5, CHORD_AM, 0.2f}, {C6, CHORD_AM, 0.2f}, {E6, CHORD_E,  0.4f}, {D6, CHORD_E,  0.2f}, {C6, CHORD_E,  0.2f},
-        {B5, CHORD_E,  0.6f}, {C6, CHORD_E,  0.2f}, {D6, CHORD_AM, 0.4f}, {E6, CHORD_AM, 0.4f},
-        {C6, CHORD_AM, 0.4f}, {A5, CHORD_AM, 0.4f}, {A5, CHORD_AM, 0.4f}, {0.0f, 0.0f,     0.2f},
-        {D6, CHORD_DM, 0.4f}, {F6, CHORD_DM, 0.2f}, {A6, CHORD_DM, 0.4f}, {G6, CHORD_AM, 0.2f}, {F6, CHORD_AM, 0.2f},
-        {E6, CHORD_AM, 0.6f}, {C6, CHORD_AM, 0.2f}, {E6, CHORD_E,  0.4f}, {D6, CHORD_E,  0.2f}, {C6, CHORD_E,  0.2f},
-        {B5, CHORD_E,  0.4f}, {B5, CHORD_E,  0.2f}, {C6, CHORD_E,  0.2f}, {D6, CHORD_AM, 0.4f}, {E6, CHORD_AM, 0.4f},
-        {C6, CHORD_AM, 0.4f}, {A5, CHORD_AM, 0.4f}, {A5, CHORD_AM, 0.4f}, {0.0f, 0.0f,     0.4f},
-        {E5, CHORD_C,  0.8f}, {C5, CHORD_C,  0.8f}, {D5, CHORD_G4, 0.8f}, {B4, CHORD_G4, 0.8f},
-        {C5, CHORD_AM, 0.8f}, {A4, CHORD_AM, 0.8f}, {G4, CHORD_E,  0.8f}, {E4, CHORD_E,  0.8f},
-        {E5, CHORD_C,  0.8f}, {C5, CHORD_C,  0.8f}, {D5, CHORD_G4, 0.8f}, {B4, CHORD_G4, 0.8f},
-        {E5, CHORD_E,  0.4f}, {G5, CHORD_E,  0.4f}, {A5, CHORD_AM, 0.4f}, {A5, CHORD_AM, 0.4f},
-        {E5, CHORD_E,  0.4f}, {G5, CHORD_E,  0.4f}, {A5, CHORD_AM, 0.4f}, {0.0f, 0.0f,     0.4f}
-    };
-
-    float total_durasi = 0.0f;
-    for (const auto& nota : lagu) total_durasi += nota.durasi;
-    
-    vector<int16_t> wadah_suara;
-    wadah_suara.reserve(static_cast<size_t>(SAMPLE_RATE * total_durasi));
-
-    float fase_melodi = 0.0f; float fase_bass = 0.0f;
-
-    for (const auto& nota : lagu) {
-        int sampel_per_nota = static_cast<int>(SAMPLE_RATE * nota.durasi);
-        float delta_melodi = (nota.frekuensi_melodi > 0.0f) ? (TWO_PI * nota.frekuensi_melodi) / SAMPLE_RATE : 0.0f;
-        float delta_bass = (nota.frekuensi_bass > 0.0f) ? (TWO_PI * nota.frekuensi_bass) / SAMPLE_RATE : 0.0f;
-        
-        int batas_fade = static_cast<int>(sampel_per_nota * 0.85f);
-        float inv_fade_durasi = 1.0f / (sampel_per_nota * 0.15f);
-
-        for (int i = 0; i < sampel_per_nota; ++i) {
-            float gelombang_melodi = (delta_melodi > 0.0f) ? sin(fase_melodi) : 0.0f;
-            float gelombang_bass = (delta_bass > 0.0f) ? sin(fase_bass) : 0.0f;
-
-            fase_melodi += delta_melodi;
-            if (fase_melodi > TWO_PI) fase_melodi -= TWO_PI;
-            fase_bass += delta_bass;
-            if (fase_bass > TWO_PI) fase_bass -= TWO_PI;
-
-            if (i > batas_fade) {
-                float faktor_fade = (sampel_per_nota - i) * inv_fade_durasi;
-                gelombang_melodi *= faktor_fade; gelombang_bass *= faktor_fade;
-            }
-
-            int16_t sampel_akhir = static_cast<int16_t>((gelombang_melodi * VOLUME_MELODI) + (gelombang_bass * VOLUME_BASS));
-            wadah_suara.push_back(sampel_akhir);
-        }
-    }
-    LabelAudio header;
-    header.ukuran_isi_suara = wadah_suara.size() * sizeof(int16_t);
-    header.ukuran_total_file = header.ukuran_isi_suara + 36;
-    header.jumlah_channel = 1;     
-    header.sample_rate = 44100;    
-    header.bit_per_sampel = 16;    
-    header.blok_align = header.jumlah_channel * (header.bit_per_sampel / 8); 
-    header.byte_per_detik = header.sample_rate * header.blok_align;          
-
-    ofstream file("theme.wav", ios::binary);
-    if (!file) return;
-
-    file.write(reinterpret_cast<const char*>(&header), sizeof(LabelAudio));
-    file.write(reinterpret_cast<const char*>(wadah_suara.data()), header.ukuran_isi_suara);
-    file.close();
-}
-void buatMusikGameOver() {
-    ifstream cekFile("gameover.wav");
-    if (cekFile.good()) {
-        cekFile.close();
-        return; 
-    }
-    cekFile.close();
-
-    const int SAMPLE_RATE = 44100;
-    const float TWO_PI = 6.28318530f;
-    const int VOLUME = 9000;
-    struct Nada { float frekuensi; float durasi; };
-    vector<Nada> melodi = {
-        {659.25f, 0.15f}, {622.25f, 0.15f}, {587.33f, 0.15f}, {554.37f, 0.15f},
-        {523.25f, 0.12f}, {493.88f, 0.12f}, {466.16f, 0.12f}, {440.00f, 0.12f},
-        {415.30f, 0.15f}, {392.00f, 0.15f}, {369.99f, 0.15f}, {349.23f, 0.15f},
-        {329.63f, 0.40f},
-        {220.00f, 0.08f}, {293.66f, 0.08f}, {392.00f, 0.12f}, {196.00f, 0.30f}
-    };
-
-    float total_durasi = 0.0f;
-    for (const auto& n : melodi) total_durasi += n.durasi;
-
-    vector<int16_t> wadah_suara;
-    wadah_suara.reserve(static_cast<size_t>(SAMPLE_RATE * total_durasi));
-
-    float fase = 0.0f;
-    for (const auto& n : melodi) {
-        int sampel_per_nota = static_cast<int>(SAMPLE_RATE * n.durasi);
-        float delta = (n.frekuensi > 0.0f) ? (TWO_PI * n.frekuensi) / SAMPLE_RATE : 0.0f;
-        int batas_fade = static_cast<int>(sampel_per_nota * 0.90f);
-        float inv_fade = 1.0f / (sampel_per_nota * 0.10f);
-
-        for (int i = 0; i < sampel_per_nota; ++i) {
-            float gelombang = (delta > 0.0f) ? sin(fase) : 0.0f;
-            fase += delta;
-            if (fase > TWO_PI) fase -= TWO_PI;
-
-            if (i > batas_fade) {
-                gelombang *= (sampel_per_nota - i) * inv_fade;
-            }
-
-            wadah_suara.push_back(static_cast<int16_t>(gelombang * VOLUME));
-        }
-    }
-
-    LabelAudio header;
-    header.ukuran_isi_suara = static_cast<int32_t>(wadah_suara.size() * sizeof(int16_t));
-    header.ukuran_total_file = header.ukuran_isi_suara + 36;
-    header.jumlah_channel = 1;     
-    header.sample_rate = SAMPLE_RATE;    
-    header.bit_per_sampel = 16;    
-    header.blok_align = header.jumlah_channel * (header.bit_per_sampel / 8); 
-    header.byte_per_detik = header.sample_rate * header.blok_align;          
-
-    ofstream file("gameover.wav", ios::binary);
-    if (!file) return;
-
-    file.write(reinterpret_cast<const char*>(&header), sizeof(LabelAudio));
-    file.write(reinterpret_cast<const char*>(wadah_suara.data()), header.ukuran_isi_suara);
-    file.close();
-}
-
-void putarMusikGameOver() {
-    PlaySoundA("gameover.wav", NULL, SND_ASYNC | SND_FILENAME | SND_NODEFAULT);
-}
-void putarMusikBackground() {
-    PlaySoundA("theme.wav", NULL, SND_ASYNC | SND_LOOP | SND_FILENAME | SND_NODEFAULT);
-}
-
-void matikanMusikBackground() {
-    PlaySoundA(NULL, NULL, 0);
-}
 //====================================score=======================================
 struct gameState{
     int score = 0;
@@ -486,8 +292,8 @@ void renderHold(int holdTipe){
     }
 }
 void gameOver(int skorAkhir) {
-    matikanMusikBackground();
-    putarMusikGameOver();
+    // matikanMusikBackground();
+    // putarMusikGameOver();
     simpanHighScore(skorAkhir);
 
     gambarKotak(30 + offsetX, 2, 22, 22, "TETRIS");
@@ -678,7 +484,7 @@ void layarGameplay() {
     setPosisiKursor(56 + offsetX, 14);  cout << "SCORE: " << GREEN << "0" << "     " << RESET;
     setPosisiKursor(56 + offsetX, 16);  cout << "LEVEL: " << WHITE << "1" << "     " << RESET;
     setPosisiKursor(56 + offsetX, 18);  cout << "LINES: " << WHITE << "0" << "     " << RESET;
-    putarMusikBackground();
+    // putarMusikBackground();
     gameLoopDenganGravitasi(); 
 }
 void gambarTampilanUtama() {
@@ -1002,8 +808,8 @@ void howToPlay() {
     showKursor();
 }
 int main() {
-    buatMusikTetris();
-    buatMusikGameOver();
+    // buatMusikTetris();
+    // buatMusikGameOver();
     system("chcp 65001 > nul");
     cout << "\033[?25l";
 
