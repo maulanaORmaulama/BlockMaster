@@ -8,7 +8,6 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
-#include <cmath>
 using namespace std;
 
 int offsetX = 40;
@@ -66,37 +65,75 @@ void gambarKotak(int startX, int startY, int width, int height, string title = "
         cout << YELLOW << " " << title << " " << RESET;
     }
 }
-vector<int> bacaHighScore() {
-    vector<int> listSkor;
+int hitungDataFile() {
     ifstream file(FILE_HIGHSCORE);
-    
+    int jumlah = 0;
+    int skor;
     if (file.is_open()) {
-        int skor;
         while (file >> skor) {
-            listSkor.push_back(skor);
+            jumlah++;
         }
         file.close();
     }
-    while (listSkor.size() < 7) {
-        listSkor.push_back(0);
+    return jumlah;
+}
+int* bacaHighScore() {
+    int jumlahData = hitungDataFile();
+    int ukuranArray = (jumlahData < 7) ? 7 : jumlahData;
+    int* listSkor = new int[ukuranArray];
+    for (int i = 0; i < ukuranArray; i++) {
+        listSkor[i] = 0;
     }
-    sort(listSkor.rbegin(), listSkor.rend());
+    ifstream file(FILE_HIGHSCORE);
+    if (file.is_open()) {
+        int i = 0;
+        int skor;
+        while (file >> skor && i < ukuranArray) {
+            listSkor[i] = skor;
+            i++;
+        }
+        file.close();
+    }
+    for (int i = 0; i < ukuranArray - 1; i++) {
+        for (int j = 0; j < ukuranArray - i - 1; j++) {
+            if (listSkor[j] < listSkor[j + 1]) {
+                int temp = listSkor[j];
+                listSkor[j] = listSkor[j + 1];
+                listSkor[j + 1] = temp;
+            }
+        }
+    }
+    
     return listSkor;
 }
 void simpanHighScore(int skorBaru) {
-    vector<int> listSkor = bacaHighScore();
-    listSkor.push_back(skorBaru);
-    sort(listSkor.rbegin(), listSkor.rend());
-    if (listSkor.size() > 7) {
-        listSkor.resize(7);
+    int jumlahDataLama = hitungDataFile();
+    int ukuranLama = (jumlahDataLama < 7) ? 7 : jumlahDataLama;
+    int* dataLama = bacaHighScore();
+    int ukuranBaru = ukuranLama + 1;
+    int* listSkor = new int[ukuranBaru];
+    for (int i = 0; i < ukuranLama; i++) {
+        listSkor[i] = dataLama[i];
+    }
+    listSkor[ukuranBaru - 1] = skorBaru;
+    delete[] dataLama;
+    for (int i = 0; i < ukuranBaru - 1; i++) {
+        for (int j = 0; j < ukuranBaru - i - 1; j++) {
+            if (listSkor[j] < listSkor[j + 1]) {
+                int temp = listSkor[j];
+                listSkor[j] = listSkor[j + 1];
+                listSkor[j + 1] = temp;
+            }
+        }
     }
     ofstream file(FILE_HIGHSCORE);
     if (file.is_open()) {
-        for (int skor : listSkor) {
-            file << skor << "\n";
+        for (int i = 0; i < 7; i++) {
+            file << listSkor[i] << "\n";
         }
         file.close();
     }
+    delete[] listSkor;
 }
 void hapusDalamKotak(int startX, int startY, int lebar, int tinggi) {
     string spasiPembersih(lebar - 2, ' ');
@@ -292,8 +329,6 @@ void renderHold(int holdTipe){
     }
 }
 void gameOver(int skorAkhir) {
-    // matikanMusikBackground();
-    // putarMusikGameOver();
     simpanHighScore(skorAkhir);
 
     gambarKotak(30 + offsetX, 2, 22, 22, "TETRIS");
@@ -472,19 +507,25 @@ void layarGameplay() {
     gambarKotak(30 + offsetX, 2, 22, 22, "TETRIS");       
     gambarKotak(54 + offsetX, 6, 14, 6, "NEXT");         
     gambarKotak(14 + offsetX, 6, 14, 6, "HOLD");         
-    gambarKotak(14 + offsetX, 12, 14, 9, "HIGH SCORE");
-    vector<int> scores = bacaHighScore();
-    for (int i = 0; i < 3 && i < scores.size(); i++) {
-        setPosisiKursor(16 + offsetX, 14 + i);
-        if (i == 0)      cout << GREEN  << "1. " << scores[i] << RESET;
-        else if (i == 1) cout << YELLOW << "2. " << scores[i] << RESET;
-        else             cout << WHITE  << "3. " << scores[i] << RESET;
+    gambarKotak(10 + offsetX, 12, 18, 8, "HIGH SCORE");
+int* scores = bacaHighScore();
+for (int i = 0; i < 3; i++) {
+    setPosisiKursor(15 + offsetX, 14 + i);
+    if (i == 0) {
+        cout << GREEN  << "1. " << scores[i] << RESET;
+    } 
+    else if (i == 1) {
+        cout << YELLOW << "2. " << scores[i] << RESET;
+    } 
+    else {
+        cout << ORANGE  << "3. " << scores[i] << RESET;
     }
+}
+delete[] scores;
     gambarKotak(54 + offsetX, 12, 18, 8, "STATS");
     setPosisiKursor(56 + offsetX, 14);  cout << "SCORE: " << GREEN << "0" << "     " << RESET;
     setPosisiKursor(56 + offsetX, 16);  cout << "LEVEL: " << WHITE << "1" << "     " << RESET;
     setPosisiKursor(56 + offsetX, 18);  cout << "LINES: " << WHITE << "0" << "     " << RESET;
-    // putarMusikBackground();
     gameLoopDenganGravitasi(); 
 }
 void gambarTampilanUtama() {
@@ -518,11 +559,23 @@ int menuUtama() {
     hapusDalamKotak(11 + offsetX, 3, 18, 15);
     gambarKotak(12 + offsetX, 6, 16, 10);
     gambarKotak(12 + offsetX, 6, 16, 10, "TOP SCORES");
-    vector<int> scores = bacaHighScore();
-    for (int i = 0; i < 7 && i < scores.size(); i++) {
-        setPosisiKursor(14 + offsetX, 8 + i);
-        cout << i + 1 << ". " << scores[i];
+int* scores = bacaHighScore();
+for (int i = 0; i < 7; i++) {
+    setPosisiKursor(16 + offsetX, 8 + i);   
+    if (i == 0) {
+        cout << GREEN  << i + 1 << ". " << scores[i] << RESET;
+    } 
+    else if (i == 1) {
+        cout << YELLOW << i + 1 << ". " << scores[i] << RESET;
     }
+    else if (i == 2){
+        cout << ORANGE << i + 1 << ". " << scores[i] << RESET;
+    } 
+    else {
+        cout << WHITE  << i + 1 << ". " << scores[i] << RESET;
+    }
+}
+delete[] scores;
 
     while (true) {
         for (int i = 0; i < 3; i++) {
